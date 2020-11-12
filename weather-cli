@@ -1,0 +1,43 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+import argparse
+import requests as req
+
+# Usage 
+parser = argparse.ArgumentParser()
+parser.add_argument("-k", "--key", help="set you API key, get it from https://openweathermap.org", required=True)
+parser.add_argument("-c", "--city", help="set you city as [city,country] example London,uk", required=True)
+parser.add_argument("-f", "--fahrenheit", help="set temp as fahrenheit, Celsius by default", action="store_true")
+parser.add_argument("-v", "--verbose", help="show output description", action="store_true")
+args = parser.parse_args()
+
+# imperial => fahrenheit , metric => celsius (default)
+units = 'imperial' if args.fahrenheit else 'metric'
+
+# get data from openweathermap api
+weather = req.get('https://api.openweathermap.org/data/2.5/weather?q=' + args.city + '&APPID=' + args.key + '&units=' + units).json()
+
+icons = {
+    # DAY           # NIGTH
+    '01d': '',     '01n':'',  # sun / moon
+    '02d': '',     '02n':'',  # cloudy with sun / moon
+    '03d': '',     '03n':'',  # cloudy
+    '04d': '',     '04n':'',  # cloudy
+    '09d': '',     '09n':'',  # rain
+    '10d': '',     '10n':'',  # rain with sun / moon
+    '11d': '',     '11n':'',  # storm
+    '13d': '',     '13n':''   # snow
+}
+
+units = '°F ' if args.fahrenheit else '°C '
+temperature = str(weather['main']['temp'])
+icon = weather['weather'][0]['icon']
+city = weather['name']
+country = weather['sys']['country']
+
+output = temperature + units + icons[icon]
+
+if args.verbose:
+    output = f"Temperature in {city} it's {output} and {weather['weather'][0]['description']}"
+
+print(output)
