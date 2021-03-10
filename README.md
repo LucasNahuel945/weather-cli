@@ -1,2 +1,2 @@
 # weather-cli
-a comand line tool to know the weather status based on openweathermap.org
+This is a little command line based tool to knows weather status on a particular city. They use the openWeatherMap.org API for fetching weather data about the city
